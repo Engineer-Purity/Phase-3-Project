@@ -1,0 +1,13 @@
+# app/__init__.py
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+# SQLite database URI
+SQLALCHEMY_DATABASE_URI = 'sqlite:///../db/finance_tracker.db'
+
+# Create SQLAlchemy engine
+engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)
+
+# Create a Session class bound to the engine
+Session = sessionmaker(bind=engine)
