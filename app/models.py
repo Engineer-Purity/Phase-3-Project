@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
@@ -15,6 +16,7 @@ class User(Base):
 
     def __repr__(self):
         return f"<User(username='{self.username}', email='{self.email}')>"
+
 
 class Transaction(Base):
     __tablename__ = 'transactions'

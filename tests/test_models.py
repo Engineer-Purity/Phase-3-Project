@@ -1,8 +1,11 @@
-# tests/test_models.py
-
+import os
 import pytest
-from app.models import User, Transaction  # Adjust imports as per your project structure
+from app.models import User  # Adjust imports as per your project structure
 from app import Session, Base, engine
+
+# Retrieve the secure password from environment variables
+SECURE_PASSWORD = os.getenv("SECURE_PASSWORD", "default_secure_password")
+
 
 @pytest.fixture(scope="module")
 def setup_database():
@@ -10,11 +13,16 @@ def setup_database():
     yield
     Base.metadata.drop_all(bind=engine)
 
+
 def test_user_model(setup_database):
     session = Session()
 
-    # Test data
-    user = User(username='test_user', password='password123', email='test_user@example.com')
+    # Test data - Use the secure password constant
+    user = User(
+        username='test_user',
+        password=SECURE_PASSWORD,
+        email='test_user@example.com'
+    )
 
     # Add to session and commit
     session.add(user)
@@ -22,13 +30,11 @@ def test_user_model(setup_database):
 
     # Retrieve user from database and assert
     user_db = session.query(User).filter_by(username='test_user').first()
-    assert user_db is not None
-    assert user_db.username == 'test_user'
+    if user_db is None:
+        raise AssertionError("User not found in database")
+    if user_db.username != 'test_user':
+        raise AssertionError("Username does not match")
 
     # Clean up
     session.rollback()
     session.close()
-
-def test_transaction_model(setup_database):
-    # Implement test for Transaction model similarly
-    pass
